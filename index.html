@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El Dicho - Refranes por Región</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-o9N1j7kP6+R4Pr2DpcQzJ8C9Jk5hjQkLZtP6H0wN0wY=" crossorigin="" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">El Dicho</p>
+      <h1>Refranes de Colombia</h1>
+      <p class="lede">Explora los dichos típicos por departamento y comparte los tuyos.</p>
+    </div>
+    <div class="chip">#HechoConCariño</div>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Mapa interactivo</h2>
+        <p>Haz clic en un departamento para ver sus refranes.</p>
+      </div>
+      <div id="map" aria-label="Mapa de Colombia"></div>
+      <div class="legend" id="departmentLegend"></div>
+    </section>
+
+    <section class="panel feed" aria-live="polite">
+      <div class="panel-header feed-header">
+        <div>
+          <p class="eyebrow">Línea de tiempo</p>
+          <h2 id="feedTitle">Refranes de todo Colombia</h2>
+        </div>
+        <button id="clearFilter" class="ghost" type="button">Quitar filtro</button>
+      </div>
+      <div id="proverbList" class="proverb-list"></div>
+    </section>
+  </main>
+
+  <section class="panel form-panel">
+    <div>
+      <p class="eyebrow">Comparte el tuyo</p>
+      <h2>Agrega un refrán</h2>
+      <p class="lede">Cuéntanos de qué región es y agrega etiquetas para que otros lo encuentren.</p>
+    </div>
+    <form id="proverbForm" class="form">
+      <label class="form-field">
+        <span>Refrán</span>
+        <textarea id="textInput" required placeholder="Ej: El que madruga Dios le ayuda"></textarea>
+      </label>
+      <div class="grid">
+        <label class="form-field">
+          <span>Autor / quién lo dice</span>
+          <input id="authorInput" type="text" placeholder="Mi abuela" />
+        </label>
+        <label class="form-field">
+          <span>Departamento</span>
+          <select id="departmentSelect" required></select>
+        </label>
+      </div>
+      <label class="form-field">
+        <span>Etiquetas (separadas por coma)</span>
+        <input id="tagsInput" type="text" placeholder="sabiduría, familia, trabajo" />
+      </label>
+      <button class="primary" type="submit">Publicar refrán</button>
+      <p class="help">Los refranes nuevos aparecen al inicio de la lista.</p>
+    </form>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-SmSRN9pLJ0v7bG2hN5I64YXNJGr2EtdXvE1fC4H3DgE=" crossorigin=""></script>
+  <script src="script.js"></script>
+</body>
+</html>
