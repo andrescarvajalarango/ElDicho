@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  name      String
+  avatar    String?
+  bio       String?
+  region    String?
+  createdAt DateTime @default(now())
+
+  dichos    Dicho[]
+  likes     Like[]
+  comments  Comment[]
+  shares    Share[]
+}
+
+model Departamento {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  code   String  @unique
+  region String
+  dichos Dicho[]
+}
+
+model Dicho {
+  id              String       @id @default(cuid())
+  text            String
+  meaning         String?
+  author          String?
+  isAnonymous     Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  userId          String
+  user            User         @relation(fields: [userId], references: [id])
+  departamentoId  String
+  departamento    Departamento @relation(fields: [departamentoId], references: [id])
+
+  likes           Like[]
+  comments        Comment[]
+  shares          Share[]
+
+  @@index([departamentoId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  dichoId   String
+  dicho     Dicho    @relation(fields: [dichoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dichoId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  dichoId   String
+  dicho     Dicho    @relation(fields: [dichoId], references: [id], onDelete: Cascade)
+
+  @@index([dichoId])
+}
+
+model Share {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  dichoId   String
+  dicho     Dicho    @relation(fields: [dichoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dichoId])
+}
