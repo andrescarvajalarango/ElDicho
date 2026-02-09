@@ -20,16 +20,21 @@ npm install
 npx prisma generate
 
 # Crear la base de datos y aplicar migraciones
-node scripts/create-db.mjs
+npx prisma migrate deploy
 
 # Sembrar datos de ejemplo
-node scripts/seed.mjs
+npm run db:seed
 
 # Iniciar el servidor de desarrollo
 npm run dev
 ```
 
 Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
+
+**Nota:** El proyecto requiere un archivo `.env` en la raíz con:
+```env
+DATABASE_URL="file:./prisma/dev.db"
+```
 
 ## Funcionalidades
 
@@ -68,8 +73,9 @@ prisma/
   schema.prisma     # Esquema de base de datos
   migrations/       # Migraciones SQL
 scripts/
-  create-db.mjs     # Crear tablas en SQLite
-  seed.mjs          # Datos de ejemplo
+  create-db.mjs     # [Deprecado] Crear tablas - usar Prisma migrate
+  seed.mjs          # [Deprecado] Seed data - incompatible con Windows
+  seed-sqlite.ts    # Script de seed compatible con todas las plataformas
 ```
 
 ## Modelo de Datos

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/create-db.mjs:*)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(test:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(node scripts/seed.mjs:*)",
+      "Bash(npm run db:seed:*)",
+      "Bash(npm install:*)",
+      "Bash(timeout 10 npm run dev:*)"
+    ]
+  }
+}
