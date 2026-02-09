@@ -9,7 +9,17 @@
       "Bash(node scripts/seed.mjs:*)",
       "Bash(npm run db:seed:*)",
       "Bash(npm install:*)",
-      "Bash(timeout 10 npm run dev:*)"
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(taskkill:*)",
+      "Bash(timeout 15 npm run dev:*)",
+      "WebFetch(domain:simplemaps.com)",
+      "WebFetch(domain:freesvg.org)",
+      "Bash(python:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(node -e:*)",
+      "Bash(node extract-svg.js:*)",
+      "Bash(node extract-paths.js:*)",
+      "Bash(npm run dev:*)"
     ]
   }
 }

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { addLike, removeLike, mockLikes } from "@/lib/mockData";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
@@ -13,18 +13,13 @@ export async function POST(
     return NextResponse.json({ error: "userId is required" }, { status: 400 });
   }
 
-  const existing = await prisma.like.findUnique({
-    where: { userId_dichoId: { userId, dichoId: id } },
-  });
+  const existing = mockLikes.find(l => l.userId === userId && l.dichoId === id);
 
   if (existing) {
-    await prisma.like.delete({ where: { id: existing.id } });
+    removeLike(id, userId);
     return NextResponse.json({ liked: false });
   }
 
-  await prisma.like.create({
-    data: { userId, dichoId: id },
-  });
-
+  addLike(id, userId);
   return NextResponse.json({ liked: true });
 }

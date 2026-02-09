@@ -1,15 +1,7 @@
-import { prisma } from "@/lib/prisma";
+import { getDepartamentosWithCount } from "@/lib/mockData";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const departamentos = await prisma.departamento.findMany({
-    include: {
-      _count: {
-        select: { dichos: true },
-      },
-    },
-    orderBy: { name: "asc" },
-  });
-
+  const departamentos = getDepartamentosWithCount();
   return NextResponse.json(departamentos);
 }

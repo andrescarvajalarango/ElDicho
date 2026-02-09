@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getDichosWithRelations, addDicho } from "@/lib/mockData";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -8,38 +8,22 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get("limit") || "20");
   const skip = (page - 1) * limit;
 
-  const where = departamentoId ? { departamentoId } : {};
+  let dichos = getDichosWithRelations();
 
-  const [dichos, total] = await Promise.all([
-    prisma.dicho.findMany({
-      where,
-      include: {
-        user: {
-          select: { id: true, username: true, name: true, avatar: true },
-        },
-        departamento: true,
-        comments: {
-          include: {
-            user: {
-              select: { id: true, username: true, name: true, avatar: true },
-            },
-          },
-          orderBy: { createdAt: "desc" },
-          take: 3,
-        },
-        _count: {
-          select: { likes: true, comments: true, shares: true },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-      skip,
-      take: limit,
-    }),
-    prisma.dicho.count({ where }),
-  ]);
+  // Filter by departamento if specified
+  if (departamentoId) {
+    dichos = dichos.filter(d => d.departamentoId === departamentoId);
+  }
+
+  // Sort by date descending
+  dichos.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+  // Pagination
+  const total = dichos.length;
+  const paginatedDichos = dichos.slice(skip, skip + limit);
 
   return NextResponse.json({
-    dichos,
+    dichos: paginatedDichos,
     pagination: {
       page,
       limit,
@@ -60,25 +44,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const dicho = await prisma.dicho.create({
-    data: {
-      text,
-      meaning,
-      author,
-      isAnonymous: isAnonymous || false,
-      userId,
-      departamentoId,
-    },
-    include: {
-      user: {
-        select: { id: true, username: true, name: true, avatar: true },
-      },
-      departamento: true,
-      _count: {
-        select: { likes: true, comments: true, shares: true },
-      },
-    },
+  const dicho = addDicho({
+    text,
+    meaning,
+    author,
+    isAnonymous: isAnonymous || false,
+    userId,
+    departamentoId,
   });
 
-  return NextResponse.json(dicho, { status: 201 });
+  // Get with relations
+  const dichosWithRelations = getDichosWithRelations();
+  const newDicho = dichosWithRelations.find(d => d.id === dicho.id);
+
+  return NextResponse.json(newDicho, { status: 201 });
 }

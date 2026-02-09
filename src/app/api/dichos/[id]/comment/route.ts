@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { addComment } from "@/lib/mockData";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
@@ -16,18 +16,7 @@ export async function POST(
     );
   }
 
-  const comment = await prisma.comment.create({
-    data: {
-      text,
-      userId,
-      dichoId: id,
-    },
-    include: {
-      user: {
-        select: { id: true, username: true, name: true, avatar: true },
-      },
-    },
-  });
+  const comment = addComment(id, text, userId);
 
   return NextResponse.json(comment, { status: 201 });
 }

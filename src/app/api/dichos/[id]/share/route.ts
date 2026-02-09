@@ -1,4 +1,3 @@
-import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
@@ -13,17 +12,6 @@ export async function POST(
     return NextResponse.json({ error: "userId is required" }, { status: 400 });
   }
 
-  const existing = await prisma.share.findUnique({
-    where: { userId_dichoId: { userId, dichoId: id } },
-  });
-
-  if (existing) {
-    return NextResponse.json({ shared: true, alreadyShared: true });
-  }
-
-  await prisma.share.create({
-    data: { userId, dichoId: id },
-  });
-
+  // Mock: just return success
   return NextResponse.json({ shared: true, alreadyShared: false });
 }
