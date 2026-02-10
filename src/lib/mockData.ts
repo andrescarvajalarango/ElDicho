@@ -64,10 +64,11 @@ export interface Share {
 
 // Datos mock
 export const mockUsers: User[] = [
-  { id: "1", username: "juancho_paisa", name: "Juan Carlos Gómez", bio: "Amante de la cultura antioqueña", region: "Antioquia", createdAt: new Date() },
-  { id: "2", username: "la_costena", name: "María del Carmen", bio: "Barranquillera de corazón", region: "Atlántico", createdAt: new Date() },
-  { id: "3", username: "el_cachaco", name: "Andrés Felipe Rojas", bio: "Bogotano orgulloso", region: "Bogotá D.C.", createdAt: new Date() },
-  { id: "4", username: "la_valluna", name: "Carolina Valencia", bio: "Cali es Cali, lo demás es loma", region: "Valle del Cauca", createdAt: new Date() },
+  { id: "demo-user-001", username: "juancho_paisa", name: "Juan Carlos Gomez", bio: "Amante de la cultura antioquena", region: "Antioquia", createdAt: new Date() },
+  { id: "1", username: "juancho_paisa", name: "Juan Carlos Gomez", bio: "Amante de la cultura antioquena", region: "Antioquia", createdAt: new Date() },
+  { id: "2", username: "la_costena", name: "Maria del Carmen", bio: "Barranquillera de corazon", region: "Atlantico", createdAt: new Date() },
+  { id: "3", username: "el_cachaco", name: "Andres Felipe Rojas", bio: "Bogotano orgulloso", region: "Bogota D.C.", createdAt: new Date() },
+  { id: "4", username: "la_valluna", name: "Carolina Valencia", bio: "Cali es Cali, lo demas es loma", region: "Valle del Cauca", createdAt: new Date() },
   { id: "5", username: "el_santandereano", name: "Pedro Luis Mantilla", bio: "De Bucaramanga pal mundo", region: "Santander", createdAt: new Date() },
 ];
 
