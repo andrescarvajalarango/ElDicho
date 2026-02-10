@@ -95,12 +95,14 @@ export default function ColombiaMap({
       </div>
 
       {/* Legend */}
-      <div className="bg-gray-50 rounded-lg p-3 text-xs">
-        <div className="font-semibold text-gray-700 mb-2">Leyenda</div>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-gray-200"></div>
-            <span className="text-gray-600">Sin dichos</span>
+      <div className="mt-4 flex flex-wrap gap-3 justify-center">
+        {Object.entries(REGION_COLORS).map(([region, colors]) => (
+          <div key={region} className="flex items-center gap-1.5 text-xs">
+            <div
+              className="w-3 h-3 rounded-sm"
+              style={{ backgroundColor: colors.fill }}
+            />
+            <span className="text-gray-600">{region}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded bg-green-300"></div>
