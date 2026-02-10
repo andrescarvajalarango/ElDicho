@@ -6,15 +6,15 @@ import DichoCard from "./DichoCard";
 interface DichoFeedProps {
   dichos: DichoWithRelations[];
   loading: boolean;
-  currentUserId: string;
   selectedDepartamento: string | null;
+  isLoggedIn: boolean;
 }
 
 export default function DichoFeed({
   dichos,
   loading,
-  currentUserId,
   selectedDepartamento,
+  isLoggedIn,
 }: DichoFeedProps) {
   if (loading) {
     return (
@@ -79,7 +79,7 @@ export default function DichoFeed({
         <DichoCard
           key={dicho.id}
           dicho={dicho}
-          currentUserId={currentUserId}
+          isLoggedIn={isLoggedIn}
         />
       ))}
     </div>

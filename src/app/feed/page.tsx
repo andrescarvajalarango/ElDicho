@@ -6,51 +6,72 @@ import ColombiaMap from "@/components/ColombiaMap";
 import DichoFeed from "@/components/DichoFeed";
 import CreateDichoModal from "@/components/CreateDichoModal";
 import { DichoWithRelations, DepartamentoData } from "@/lib/types";
-
-const DEMO_USER_ID = "demo-user-001";
+import { fetchDichos, fetchDepartamentos } from "@/lib/api";
+import { fetchCurrentUser, isLoggedIn, CurrentUser } from "@/lib/auth";
 
 export default function FeedPage() {
   const [dichos, setDichos] = useState<DichoWithRelations[]>([]);
   const [departamentos, setDepartamentos] = useState<DepartamentoData[]>([]);
-  const [selectedDepartamento, setSelectedDepartamento] = useState<
-    string | null
-  >(null);
+  const [selectedDepartamento, setSelectedDepartamento] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
-  const fetchDichos = useCallback(async () => {
+  // Check auth on mount
+  useEffect(() => {
+    async function checkAuth() {
+      if (isLoggedIn()) {
+        const user = await fetchCurrentUser();
+        setCurrentUser(user);
+      }
+      setAuthChecked(true);
+    }
+    checkAuth();
+  }, []);
+
+  const loadDichos = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (selectedDepartamento) {
-        params.set("departamentoId", selectedDepartamento);
-      }
-      const res = await fetch(`/api/dichos?${params}`);
-      const data = await res.json();
+      const data = await fetchDichos({
+        departamentoId: selectedDepartamento,
+      });
       setDichos(data.dichos);
+    } catch (err) {
+      console.error("Error loading dichos:", err);
     } finally {
       setLoading(false);
     }
   }, [selectedDepartamento]);
 
   useEffect(() => {
-    fetch("/api/departamentos")
-      .then((res) => res.json())
-      .then(setDepartamentos);
+    fetchDepartamentos()
+      .then(setDepartamentos)
+      .catch((err) => console.error("Error loading departamentos:", err));
   }, []);
 
   useEffect(() => {
-    fetchDichos();
-  }, [fetchDichos]);
+    if (authChecked) {
+      loadDichos();
+    }
+  }, [loadDichos, authChecked]);
 
   const selectedDeptName = selectedDepartamento
     ? departamentos.find((d) => d.id === selectedDepartamento)?.name
     : null;
 
+  const handleCreateClick = () => {
+    if (!currentUser) {
+      window.location.href = "/login";
+      return;
+    }
+    setShowCreateModal(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white">
-      <Header onCreateClick={() => setShowCreateModal(true)} />
+      <Header onCreateClick={handleCreateClick} currentUser={currentUser} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <div className="text-center mb-6 sm:mb-8">
@@ -139,20 +160,21 @@ export default function FeedPage() {
             <DichoFeed
               dichos={dichos}
               loading={loading}
-              currentUserId={DEMO_USER_ID}
               selectedDepartamento={selectedDepartamento}
+              isLoggedIn={!!currentUser}
             />
           </section>
         </div>
       </main>
 
-      <CreateDichoModal
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        onCreated={fetchDichos}
-        departamentos={departamentos}
-        currentUserId={DEMO_USER_ID}
-      />
+      {currentUser && (
+        <CreateDichoModal
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onCreated={loadDichos}
+          departamentos={departamentos}
+        />
+      )}
     </div>
   );
 }

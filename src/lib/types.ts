@@ -23,6 +23,8 @@ export interface DichoWithRelations {
     shares: number;
   };
   comments: CommentData[];
+  userLiked: boolean;
+  userShared: boolean;
 }
 
 export interface CommentData {

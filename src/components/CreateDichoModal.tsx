@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { DepartamentoData } from "@/lib/types";
+import { createDicho } from "@/lib/api";
 
 interface CreateDichoModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreated: () => void;
   departamentos: DepartamentoData[];
-  currentUserId: string;
 }
 
 export default function CreateDichoModal({
@@ -16,7 +16,6 @@ export default function CreateDichoModal({
   onClose,
   onCreated,
   departamentos,
-  currentUserId,
 }: CreateDichoModalProps) {
   const [text, setText] = useState("");
   const [meaning, setMeaning] = useState("");
@@ -24,6 +23,7 @@ export default function CreateDichoModal({
   const [departamentoId, setDepartamentoId] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   if (!isOpen) return null;
 
@@ -32,28 +32,24 @@ export default function CreateDichoModal({
     if (!text.trim() || !departamentoId || submitting) return;
 
     setSubmitting(true);
+    setError("");
     try {
-      const res = await fetch("/api/dichos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: text.trim(),
-          meaning: meaning.trim() || null,
-          author: author.trim() || null,
-          isAnonymous,
-          userId: currentUserId,
-          departamentoId,
-        }),
+      await createDicho({
+        text: text.trim(),
+        meaning: meaning.trim() || null,
+        author: author.trim() || null,
+        isAnonymous,
+        departamentoId,
       });
-      if (res.ok) {
-        setText("");
-        setMeaning("");
-        setAuthor("");
-        setDepartamentoId("");
-        setIsAnonymous(false);
-        onCreated();
-        onClose();
-      }
+      setText("");
+      setMeaning("");
+      setAuthor("");
+      setDepartamentoId("");
+      setIsAnonymous(false);
+      onCreated();
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al crear el dicho");
     } finally {
       setSubmitting(false);
     }
@@ -86,6 +82,12 @@ export default function CreateDichoModal({
             </svg>
           </button>
         </div>
+
+        {error && (
+          <div className="mb-4 px-4 py-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-600">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
