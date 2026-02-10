@@ -95,27 +95,26 @@ export default function ColombiaMap({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex flex-wrap gap-3 justify-center">
-        {Object.entries(REGION_COLORS).map(([region, colors]) => (
-          <div key={region} className="flex items-center gap-1.5 text-xs">
-            <div
-              className="w-3 h-3 rounded-sm"
-              style={{ backgroundColor: colors.fill }}
-            />
-            <span className="text-gray-600">{region}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-green-300"></div>
-            <span className="text-gray-600">1-4 dichos</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-green-400"></div>
-            <span className="text-gray-600">5-9 dichos</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-green-500"></div>
-            <span className="text-gray-600">10+ dichos</span>
-          </div>
+      <div className="mt-4 flex flex-wrap gap-3 justify-center text-xs">
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-sm bg-gray-200"></div>
+          <span className="text-gray-600">Sin dichos</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#86efac" }}></div>
+          <span className="text-gray-600">1-4 dichos</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#4ade80" }}></div>
+          <span className="text-gray-600">5-9 dichos</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#22c55e" }}></div>
+          <span className="text-gray-600">10+ dichos</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#f59e0b" }}></div>
+          <span className="text-gray-600">Seleccionado</span>
         </div>
       </div>
     </div>
