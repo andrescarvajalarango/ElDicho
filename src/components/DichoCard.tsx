@@ -63,10 +63,11 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
   const [commentText, setCommentText] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const displayName = dicho.isAnonymous ? "Anonimo" : dicho.user.name;
+  const user = dicho.user || { id: "unknown", username: "usuario", name: "Usuario", avatar: null };
+  const displayName = dicho.isAnonymous ? "Anonimo" : user.name;
   const displayUsername = dicho.isAnonymous
     ? "anonimo"
-    : dicho.user.username;
+    : user.username;
 
   const handleLike = async () => {
     const prev = liked;
@@ -127,7 +128,7 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
       {/* Header */}
       <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3 flex items-start gap-3">
         <div
-          className={`w-11 h-11 rounded-full ${getAvatarColor(dicho.user.id)} flex items-center justify-center text-white font-bold text-sm shrink-0`}
+          className={`w-11 h-11 rounded-full ${getAvatarColor(user.id)} flex items-center justify-center text-white font-bold text-sm shrink-0`}
         >
           {getInitials(displayName)}
         </div>
