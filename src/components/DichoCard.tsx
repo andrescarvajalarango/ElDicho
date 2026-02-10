@@ -63,7 +63,7 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
   const [commentText, setCommentText] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const displayName = dicho.isAnonymous ? "An\u00f3nimo" : dicho.user.name;
+  const displayName = dicho.isAnonymous ? "Anonimo" : dicho.user.name;
   const displayUsername = dicho.isAnonymous
     ? "anonimo"
     : dicho.user.username;
@@ -125,7 +125,7 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
   return (
     <article className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
       {/* Header */}
-      <div className="px-5 pt-5 pb-3 flex items-start gap-3">
+      <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3 flex items-start gap-3">
         <div
           className={`w-11 h-11 rounded-full ${getAvatarColor(dicho.user.id)} flex items-center justify-center text-white font-bold text-sm shrink-0`}
         >
@@ -168,8 +168,8 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
       </div>
 
       {/* Dicho text */}
-      <div className="px-5 pb-3">
-        <blockquote className="text-xl font-serif text-gray-800 leading-relaxed italic">
+      <div className="px-4 sm:px-5 pb-3">
+        <blockquote className="text-lg sm:text-xl font-serif text-gray-800 leading-relaxed italic">
           &ldquo;{dicho.text}&rdquo;
         </blockquote>
         {dicho.meaning && (
@@ -183,7 +183,7 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
       </div>
 
       {/* Actions */}
-      <div className="px-5 py-3 border-t border-gray-50 flex items-center justify-between">
+      <div className="px-4 sm:px-5 py-3 border-t border-gray-50 flex items-center justify-between">
         <button
           onClick={handleLike}
           className={`flex items-center gap-1.5 text-sm font-medium transition-colors cursor-pointer ${
@@ -225,7 +225,7 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
 
       {/* Comments section */}
       {showComments && (
-        <div className="px-5 pb-4 border-t border-gray-50">
+        <div className="px-4 sm:px-5 pb-4 border-t border-gray-50">
           <form onSubmit={handleComment} className="flex gap-2 mt-3">
             <input
               type="text"

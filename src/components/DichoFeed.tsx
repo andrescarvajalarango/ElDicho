@@ -62,11 +62,11 @@ export default function DichoFeed({
         <h3 className="text-lg font-semibold text-gray-700 mb-1">
           {selectedDepartamento
             ? "No hay dichos para este departamento"
-            : "No hay dichos a\u00fan"}
+            : "No hay dichos aun"}
         </h3>
         <p className="text-gray-400 text-sm">
           {selectedDepartamento
-            ? "S\u00e9 el primero en compartir un dicho de esta regi\u00f3n"
+            ? "Se el primero en compartir un dicho de esta region"
             : "Comienza compartiendo el primer dicho colombiano"}
         </p>
       </div>
