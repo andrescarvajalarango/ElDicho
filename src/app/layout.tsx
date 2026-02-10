@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ElDicho - Dichos y Refranes de Colombia",
+  title: "MejorDicho! - Dichos y Refranes de Colombia",
   description:
     "Descubre, comparte y preserva los dichos y refranes tradicionales de Colombia organizados por regiones y departamentos.",
 };

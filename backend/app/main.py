@@ -33,7 +33,7 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
     description=(
-        "API para ElDicho - plataforma social de dichos y refranes colombianos. "
+        "API para MejorDicho! - plataforma social de dichos y refranes colombianos. "
         "Preserva la riqueza cultural de Colombia a través de sus expresiones populares."
     ),
     docs_url="/docs",
