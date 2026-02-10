@@ -19,7 +19,15 @@
       "Bash(node -e:*)",
       "Bash(node extract-svg.js:*)",
       "Bash(node extract-paths.js:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(ls:*)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:mapsvg.com)",
+      "Bash(curl:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npx next build:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }
