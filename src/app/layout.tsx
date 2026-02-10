@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MejorDicho! - Dichos y Refranes de Colombia",
+  title: "MejorDicho! - Cultura Popular de Colombia",
   description:
-    "Descubre, comparte y preserva los dichos y refranes tradicionales de Colombia organizados por regiones y departamentos.",
+    "Descubre, comparte y preserva la cultura colombiana: dichos, recetas, juegos tipicos y tradiciones de los 33 departamentos.",
 };
 
 export default function RootLayout({

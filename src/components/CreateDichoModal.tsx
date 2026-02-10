@@ -60,9 +60,9 @@ export default function CreateDichoModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
+      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl shadow-xl w-full max-w-lg p-5 sm:p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-xl font-bold text-gray-800">
             Compartir un dicho
@@ -110,7 +110,7 @@ export default function CreateDichoModal({
               type="text"
               value={meaning}
               onChange={(e) => setMeaning(e.target.value)}
-              placeholder="Qu\u00e9 quiere decir este dicho..."
+              placeholder="Que quiere decir este dicho..."
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
             />
           </div>
@@ -142,7 +142,7 @@ export default function CreateDichoModal({
               type="text"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              placeholder="Tradici\u00f3n oral, abuelo, etc."
+              placeholder="Tradicion oral, abuelo, etc."
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
             />
           </div>
@@ -155,7 +155,7 @@ export default function CreateDichoModal({
               className="w-4 h-4 rounded border-gray-300 text-amber-500 focus:ring-amber-400"
             />
             <span className="text-sm text-gray-600">
-              Publicar como an\u00f3nimo
+              Publicar como anonimo
             </span>
           </label>
 
