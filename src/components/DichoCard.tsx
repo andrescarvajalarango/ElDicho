@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { DichoWithRelations } from "@/lib/types";
+import { toggleLike, addComment, shareDicho } from "@/lib/api";
 
 interface DichoCardProps {
   dicho: DichoWithRelations;
-  currentUserId: string;
+  isLoggedIn: boolean;
 }
 
 function timeAgo(dateStr: string): string {
@@ -52,11 +53,11 @@ function getAvatarColor(userId: string): string {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
-export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
+export default function DichoCard({ dicho, isLoggedIn }: DichoCardProps) {
   const [likes, setLikes] = useState(dicho._count.likes);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(dicho.userLiked);
   const [shares, setShares] = useState(dicho._count.shares);
-  const [shared, setShared] = useState(false);
+  const [shared, setShared] = useState(dicho.userShared);
   const [commentCount, setCommentCount] = useState(dicho._count.comments);
   const [comments, setComments] = useState(dicho.comments || []);
   const [showComments, setShowComments] = useState(false);
@@ -65,38 +66,43 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
 
   const user = dicho.user || { id: "unknown", username: "usuario", name: "Usuario", avatar: null };
   const displayName = dicho.isAnonymous ? "Anonimo" : user.name;
-  const displayUsername = dicho.isAnonymous
-    ? "anonimo"
-    : user.username;
+  const displayUsername = dicho.isAnonymous ? "anonimo" : user.username;
+
+  const requireAuth = () => {
+    if (!isLoggedIn) {
+      window.location.href = "/login";
+      return true;
+    }
+    return false;
+  };
 
   const handleLike = async () => {
-    const prev = liked;
+    if (requireAuth()) return;
+
+    const prevLiked = liked;
+    const prevLikes = likes;
     setLiked(!liked);
-    setLikes((l) => (prev ? l - 1 : l + 1));
+    setLikes((l) => (prevLiked ? l - 1 : l + 1));
 
     try {
-      await fetch(`/api/dichos/${dicho.id}/like`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: currentUserId }),
-      });
+      const result = await toggleLike(dicho.id);
+      setLiked(result.liked);
+      setLikes(prevLikes + (result.liked ? 1 : 0) - (prevLiked ? 1 : 0));
     } catch {
-      setLiked(prev);
-      setLikes((l) => (prev ? l + 1 : l - 1));
+      setLiked(prevLiked);
+      setLikes(prevLikes);
     }
   };
 
   const handleShare = async () => {
+    if (requireAuth()) return;
     if (shared) return;
+
     setShared(true);
     setShares((s) => s + 1);
 
     try {
-      await fetch(`/api/dichos/${dicho.id}/share`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: currentUserId }),
-      });
+      await shareDicho(dicho.id);
     } catch {
       setShared(false);
       setShares((s) => s - 1);
@@ -105,19 +111,17 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
 
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (requireAuth()) return;
     if (!commentText.trim() || submitting) return;
 
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/dichos/${dicho.id}/comment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: currentUserId, text: commentText }),
-      });
-      const newComment = await res.json();
+      const newComment = await addComment(dicho.id, commentText.trim());
       setComments((prev) => [newComment, ...prev]);
       setCommentCount((c) => c + 1);
       setCommentText("");
+    } catch (err) {
+      console.error("Error adding comment:", err);
     } finally {
       setSubmitting(false);
     }
@@ -227,22 +231,28 @@ export default function DichoCard({ dicho, currentUserId }: DichoCardProps) {
       {/* Comments section */}
       {showComments && (
         <div className="px-4 sm:px-5 pb-4 border-t border-gray-50">
-          <form onSubmit={handleComment} className="flex gap-2 mt-3">
-            <input
-              type="text"
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              placeholder="Escribe un comentario..."
-              className="flex-1 px-3 py-2 bg-gray-50 rounded-full text-sm border border-gray-200 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
-            />
-            <button
-              type="submit"
-              disabled={submitting || !commentText.trim()}
-              className="px-4 py-2 bg-amber-500 text-white text-sm rounded-full font-medium hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              Enviar
-            </button>
-          </form>
+          {isLoggedIn ? (
+            <form onSubmit={handleComment} className="flex gap-2 mt-3">
+              <input
+                type="text"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Escribe un comentario..."
+                className="flex-1 px-3 py-2 bg-gray-50 rounded-full text-sm border border-gray-200 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+              />
+              <button
+                type="submit"
+                disabled={submitting || !commentText.trim()}
+                className="px-4 py-2 bg-amber-500 text-white text-sm rounded-full font-medium hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                Enviar
+              </button>
+            </form>
+          ) : (
+            <p className="mt-3 text-sm text-gray-400 text-center">
+              <a href="/login" className="text-amber-600 font-medium hover:text-amber-700">Inicia sesion</a> para comentar
+            </p>
+          )}
 
           {comments.length > 0 && (
             <div className="mt-3 space-y-2">
