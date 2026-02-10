@@ -56,9 +56,11 @@ export default function ColombiaMap({
       {/* Map */}
       <div className="bg-white rounded-lg border border-gray-200 p-4 relative">
         {/* Tooltip */}
-        {hoveredDeptData && (
+        {hoveredDept && (
           <div className="absolute top-2 left-2 bg-gray-900 text-white text-xs px-2 py-1 rounded shadow-lg z-10 pointer-events-none">
-            {hoveredDeptData.name} — {hoveredDeptData._count.dichos} dichos
+            {hoveredDeptData
+              ? `${hoveredDeptData.name} — ${hoveredDeptData._count.dichos} dichos`
+              : COLOMBIA_MAP.locations.find((l) => l.id === hoveredDept)?.name}
           </div>
         )}
 
@@ -84,10 +86,7 @@ export default function ColombiaMap({
                 onMouseEnter={() => setHoveredDept(loc.id)}
                 onMouseLeave={() => setHoveredDept(null)}
               >
-                <title>
-                  {getDeptFromSvgId(loc.id)?.name || loc.name} —{" "}
-                  {getDeptFromSvgId(loc.id)?._count.dichos ?? 0} dichos
-                </title>
+                <title>{loc.name}</title>
               </path>
             ))}
           </g>
