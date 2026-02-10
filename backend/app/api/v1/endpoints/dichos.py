@@ -9,7 +9,7 @@ from sqlalchemy.orm import selectinload
 
 from app.core.config import get_settings
 from app.core.database import get_db
-from app.core.security import get_current_user
+from app.core.security import get_current_user, get_optional_user
 from app.models.departamento import Departamento
 from app.models.dicho import Dicho
 from app.models.interactions import Comment, Like, Share
@@ -78,6 +78,7 @@ async def list_dichos(
     departamento_id: str | None = Query(default=None, alias="departamentoId"),
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=20, ge=1, le=100),
+    current_user: User | None = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
     # Base query
@@ -111,12 +112,36 @@ async def list_dichos(
     result = await db.execute(query)
     dichos = result.scalars().all()
 
+    # Check which dichos the current user has liked/shared
+    user_liked_ids: set[str] = set()
+    user_shared_ids: set[str] = set()
+    if current_user:
+        dicho_ids = [d.id for d in dichos]
+        if dicho_ids:
+            liked_result = await db.execute(
+                select(Like.dicho_id).where(
+                    Like.user_id == current_user.id,
+                    Like.dicho_id.in_(dicho_ids),
+                )
+            )
+            user_liked_ids = {row[0] for row in liked_result.all()}
+
+            shared_result = await db.execute(
+                select(Share.dicho_id).where(
+                    Share.user_id == current_user.id,
+                    Share.dicho_id.in_(dicho_ids),
+                )
+            )
+            user_shared_ids = {row[0] for row in shared_result.all()}
+
     dicho_responses = [
         _build_dicho_response(
             dicho=d,
             likes_count=len(d.likes),
             comments_count=len(d.comments),
             shares_count=len(d.shares),
+            user_liked=d.id in user_liked_ids,
+            user_shared=d.id in user_shared_ids,
         )
         for d in dichos
     ]
