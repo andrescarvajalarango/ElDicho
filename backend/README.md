@@ -80,7 +80,7 @@ python -m venv venv
 
 **Windows (CMD):**
 ```cmd
-python -m venv venv
+py -3.12 -m venv venv
 venv\Scripts\activate.bat
 ```
 
