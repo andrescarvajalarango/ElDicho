@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Header from "@/components/Header";
 import ColombiaMap from "@/components/ColombiaMap";
 import DichoFeed from "@/components/DichoFeed";
@@ -18,6 +18,7 @@ export default function FeedPage() {
   const [showMap, setShowMap] = useState(false);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const feedRef = useRef<HTMLElement>(null);
 
   // Check auth on mount
   useEffect(() => {
@@ -60,6 +61,16 @@ export default function FeedPage() {
   const selectedDeptName = selectedDepartamento
     ? departamentos.find((d) => d.id === selectedDepartamento)?.name
     : null;
+
+  const handleMobileMapSelect = (deptId: string | null) => {
+    setSelectedDepartamento(deptId);
+    if (deptId) {
+      setShowMap(false);
+      setTimeout(() => {
+        feedRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  };
 
   const handleCreateClick = () => {
     if (!currentUser) {
@@ -114,7 +125,7 @@ export default function FeedPage() {
               <ColombiaMap
                 departamentos={departamentos}
                 selectedDepartamento={selectedDepartamento}
-                onSelectDepartamento={setSelectedDepartamento}
+                onSelectDepartamento={handleMobileMapSelect}
               />
             </div>
           )}
@@ -138,7 +149,7 @@ export default function FeedPage() {
             </div>
           </aside>
 
-          <section className="lg:col-span-8 xl:col-span-8">
+          <section ref={feedRef} className="lg:col-span-8 xl:col-span-8">
             {selectedDeptName && (
               <div className="mb-4 flex items-center gap-2 bg-amber-50 rounded-xl px-4 py-3 border border-amber-100">
                 <svg className="w-5 h-5 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -15,6 +15,7 @@ from app.models.user import User
 
 settings = get_settings()
 security_scheme = HTTPBearer()
+optional_security_scheme = HTTPBearer(auto_error=False)
 
 
 def hash_password(password: str) -> str:
@@ -107,5 +108,36 @@ async def get_current_user(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Usuario desactivado",
         )
+
+    return user
+
+
+async def get_optional_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(optional_security_scheme),
+    db: AsyncSession = Depends(get_db),
+) -> User | None:
+    """Dependency that returns the current user if authenticated, or None."""
+    if not credentials:
+        return None
+
+    try:
+        payload = jwt.decode(
+            credentials.credentials, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
+        )
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        return None
+
+    if payload.get("type") != "access":
+        return None
+
+    user_id = payload.get("sub")
+    if not user_id:
+        return None
+
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+
+    if not user or not user.is_active:
+        return None
 
     return user
